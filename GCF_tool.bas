@@ -10,13 +10,11 @@ Sub GCF()                                        'tool for general conditioning 
     Set StartCells = Application.InputBox("Enter or click where you would like formatting to start", "Obtain Range Object", Type:=8) 'prompts user to select range in their active workbook
     StartRow = StartCells.Row
     StartCol = StartCells.Column
-    'MsgBox ("The range is" & StartCells.Address) 'test to ensure that range was picked up
     
 
     Set EndCells = Application.InputBox("Enter or click where you would like formatting to stop", "Obtain Range Object", Type:=8) 'where to end pasting
     EndRow = EndCells.Row
     EndCol = EndCells.Column
-    'MsgBox ("The range is" & EndCells.Address)
 
     InputAnswer = InputBox("How many cells would you like between each format paste?") 'increments
 
@@ -33,7 +31,6 @@ Sub GCF()                                        'tool for general conditioning 
 
     Set WS = ActiveSheet
     Set MergeRange = StartCells
-    'MsgBox ("The range is" & MergeRange.Address)
 
 For Each SelectCell In StartCells
 
