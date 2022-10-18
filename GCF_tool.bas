@@ -4,7 +4,8 @@ Option Compare Text
 Sub GCF()                                        'tool for general conditioning formatting across multiple cells
 
     Dim MergeRange As Range, StartCells As Range, EndCells As Range, InputDirection As String, OverrideFormat As Integer, _
-    InputAnswer As Integer, StartRow As Integer, StartCol As Integer, EndRow As Integer, EndCol As Integer, WS As Worksheet
+    InputAnswer As Integer, StartRow As Integer, StartCol As Integer, EndRow As Integer, EndCol As Integer, WS As Worksheet, _
+    oldRng As Range, cond As Variant
 
     Set StartCells = Application.InputBox("Enter or click where you would like formatting to start", "Obtain Range Object", Type:=8) 'prompts user to select range in their active workbook
     StartRow = StartCells.Row
@@ -38,13 +39,12 @@ Sub GCF()                                        'tool for general conditioning 
      
         For i = StartCol + InputAnswer To EndCol Step InputAnswer
             If OverrideFormat = 6 Then WS.Cells(StartRow, i).FormatConditions.Delete 'for "Right" answer
-            Set MergeRange = Union(MergeRange, WS.Cells(StartRow, i))
-            StartCells.FormatConditions(1).ModifyAppliesToRange MergeRange
+            For cond = 1 To StartCells.FormatConditions.Count
+                Set oldRng = StartCells.FormatConditions(cond).AppliesTo
+                Set MergeRange = Union(MergeRange, oldRng, WS.Cells(StartRow, i))
+                StartCells.FormatConditions(cond).ModifyAppliesToRange MergeRange
+            Next
         
-        Next
-    
-        For Each cell In MergeRange.FormatConditions(cell)
-        MergeRange.FormatConditions(cell).ModifyAppliesToRange MergeRange + 1
         Next
         
 
@@ -53,8 +53,11 @@ Sub GCF()                                        'tool for general conditioning 
         For i = StartCol - InputAnswer To EndCol Step -InputAnswer
         
             If OverrideFormat = 6 Then WS.Cells(StartRow, i).FormatConditions.Delete 'for "Left" answer
-            Set MergeRange = Union(MergeRange, WS.Cells(StartRow, i))
-            StartCells.FormatConditions(1).ModifyAppliesToRange MergeRange
+            For cond = 1 To StartCells.FormatConditions.Count
+                Set oldRng = StartCells.FormatConditions(cond).AppliesTo
+                Set MergeRange = Union(MergeRange, oldRng, WS.Cells(StartRow, i))
+                StartCells.FormatConditions(cond).ModifyAppliesToRange MergeRange
+            Next
         Next
         
     ElseIf InputDirection = "Up" Then
@@ -62,8 +65,11 @@ Sub GCF()                                        'tool for general conditioning 
         For i = StartRow - InputAnswer To EndRow Step -InputAnswer
         
             If OverrideFormat = 6 Then WS.Cells(i, StartCol).FormatConditions.Delete 'for "Up" answer
-            Set MergeRange = Union(MergeRange, WS.Cells(i, StartCol))
-            StartCells.FormatConditions(1).ModifyAppliesToRange MergeRange
+            For cond = 1 To StartCells.FormatConditions.Count
+                Set oldRng = StartCells.FormatConditions(cond).AppliesTo
+                Set MergeRange = Union(MergeRange, oldRng, WS.Cells(i, StartCol))
+                StartCells.FormatConditions(cond).ModifyAppliesToRange MergeRange
+            Next
         Next
         
     ElseIf InputDirection = "Down" Then
@@ -71,8 +77,13 @@ Sub GCF()                                        'tool for general conditioning 
         For i = StartRow + InputAnswer To EndRow Step InputAnswer
         
             If OverrideFormat = 6 Then WS.Cells(i, StartCol).FormatConditions.Delete 'for "Down" answer
-            Set MergeRange = Union(MergeRange, WS.Cells(i, StartCol))
-            StartCells.FormatConditions(1).ModifyAppliesToRange MergeRange
+            Set oldRng = StartCells.FormatConditions(1).AppliesTo
+            Set MergeRange = Union(MergeRange, oldRng, WS.Cells(i, StartCol))
+            For cond = 1 To StartCells.FormatConditions.Count
+                Set oldRng = StartCells.FormatConditions(cond).AppliesTo
+                Set MergeRange = Union(MergeRange, oldRng, WS.Cells(i, StartCol))
+                StartCells.FormatConditions(cond).ModifyAppliesToRange MergeRange
+            Next
         Next
             
             
@@ -80,12 +91,7 @@ Sub GCF()                                        'tool for general conditioning 
     
 
 
-    'Set UnionRange = Range("E1")
-    'For i = 1 To 20 Step InputAnswer
-    'Set UnionRange = Union(UnionRange, WS.Cells(i, 5))
-    'Next
-    'ActiveCell.FormatConditions(1).ModifyAppliesToRange UnionRange
-
 End Sub
+
 
 
