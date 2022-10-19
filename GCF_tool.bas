@@ -39,56 +39,49 @@ For Each SelectCell In StartCells
 
 
     If InputDirection = "Right" Then
-     
+      
+If OverrideFormat = 6 Then WS.Cells(StartRow, i).FormatConditions.Delete 'for "Right" answer
+     For cond = 1 To SelectCell.FormatConditions.Count
         For i = StartCol + InputAnswer To EndCol Step InputAnswer
-            If OverrideFormat = 6 Then WS.Cells(StartRow, i).FormatConditions.Delete 'for "Right" answer
-            For cond = 1 To SelectCell.FormatConditions.Count
                 Set oldRng = SelectCell.FormatConditions(cond).AppliesTo
-                Set MergeRange = Union(MergeRange, oldRng, WS.Cells(StartRow, i))
-                SelectCell.FormatConditions(cond).ModifyAppliesToRange MergeRange
+                Set MergeRange = Union(MergeRange, oldRng, WS.Cells(StartRow, i)) 
             Next
-        
+            SelectCell.FormatConditions(cond).ModifyAppliesToRange MergeRange                     
         Next
-        
+                                               
 
     ElseIf InputDirection = "Left" Then
-    
+                                
+    If OverrideFormat = 6 Then WS.Cells(StartRow, i).FormatConditions.Delete 'for "Left" answer                            
+    For cond = 1 To SelectCell.FormatConditions.Count
         For i = StartCol - InputAnswer To EndCol Step -InputAnswer
-        
-            If OverrideFormat = 6 Then WS.Cells(StartRow, i).FormatConditions.Delete 'for "Left" answer
-            For cond = 1 To SelectCell.FormatConditions.Count
                 Set oldRng = SelectCell.FormatConditions(cond).AppliesTo
                 Set MergeRange = Union(MergeRange, oldRng, WS.Cells(StartRow, i))
-                SelectCell.FormatConditions(cond).ModifyAppliesToRange MergeRange
             Next
+            SelectCell.FormatConditions(cond).ModifyAppliesToRange MergeRange
         Next
         
     ElseIf InputDirection = "Up" Then
-    
+                                    
+If OverrideFormat = 6 Then WS.Cells(i, StartCol).FormatConditions.Delete 'for "Up" answer
+    For cond = 1 To SelectCell.FormatConditions.Count
         For i = StartRow - InputAnswer To EndRow Step -InputAnswer
-        
-            If OverrideFormat = 6 Then WS.Cells(i, StartCol).FormatConditions.Delete 'for "Up" answer
-            For cond = 1 To SelectCell.FormatConditions.Count
-                Set oldRng = SelectCell.FormatConditions(cond).AppliesTo
-                Set MergeRange = Union(MergeRange, oldRng, WS.Cells(i, StartCol))
-                SelectCell.FormatConditions(cond).ModifyAppliesToRange MergeRange
+        Set oldRng = SelectCell.FormatConditions(cond).AppliesTo
+           Set MergeRange = Union(MergeRange, oldRng, WS.Cells(i, StartCol))
             Next
+   SelectCell.FormatConditions(cond).ModifyAppliesToRange MergeRange
         Next
         
     ElseIf InputDirection = "Down" Then
     
+   If OverrideFormat = 6 Then WS.Cells(i, StartCol).FormatConditions.Delete 'for "Down" answer
+     For cond = 1 To SelectCell.FormatConditions.Count
         For i = StartRow + InputAnswer To EndRow Step InputAnswer
-        
-            If OverrideFormat = 6 Then WS.Cells(i, StartCol).FormatConditions.Delete 'for "Down" answer
-            Set oldRng = SelectCell.FormatConditions(1).AppliesTo
-            Set MergeRange = Union(MergeRange, oldRng, WS.Cells(i, StartCol))
-            For cond = 1 To SelectCell.FormatConditions.Count
                 Set oldRng = SelectCell.FormatConditions(cond).AppliesTo
                 Set MergeRange = Union(MergeRange, oldRng, WS.Cells(i, StartCol))
-                SelectCell.FormatConditions(cond).ModifyAppliesToRange MergeRange
             Next
-        Next
-            
+       SelectCell.FormatConditions(cond).ModifyAppliesToRange MergeRange
+        Next            
             
     End If
     
